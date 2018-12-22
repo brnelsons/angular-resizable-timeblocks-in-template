@@ -1,0 +1,31 @@
+.container {
+
+}
+
+.source-container {
+}
+
+.source-block {
+  height: 100px;
+  width: 100px;
+  border: 1px solid grey;
+}
+
+.target-container {
+  height: 500px;
+  border: 1px solid grey;
+}
+
+.target-block {
+  height: 60px;
+  border: 1px solid grey;
+}
+
+.drop-preview {
+  height: 5px;
+}
+
+.drop-preview-active {
+  height: 5px;
+  background: green;
+}
