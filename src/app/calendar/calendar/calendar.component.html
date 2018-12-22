@@ -1,15 +1,4 @@
-<div>
-  <div style="border: 1px green solid; background: lightgreen; position: absolute; width: 100%"
-       fxLayout="column" fxLayoutAlign="space-between stretch" [ngStyle]="{'height': height + 'px'}">
-
-    <div fxLayout="row" fxLayoutAlign="center center">
-      <mat-icon class="handle" appDraggable (onDrag)="dragUp($event)">drag_handle</mat-icon>
-    </div>
-
-    <div fxLayout="row" fxLayoutAlign="center center">Test</div>
-
-    <div fxLayout="row" fxLayoutAlign="center center">
-      <mat-icon class="handle" appDraggable (onDrag)="dragDown($event)">drag_handle</mat-icon>
-    </div>
-  </div>
+<div style="height: 720px; width: 200px; position:relative" fxLayout="column">
+  <app-calendar-block max="1440" [data]="{start: 0, end: 60, title: 'testing'}"></app-calendar-block>
+  <app-calendar-block max="1440" [data]="{start: 60, end: 240, title: 'testing'}"></app-calendar-block>
 </div>
