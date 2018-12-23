@@ -1,4 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Host, Input, OnInit} from '@angular/core';
+import {CalenderContainerDirective} from '../calender-container.directive';
 
 export interface CalendarBlockData {
   start: number;
@@ -13,30 +14,37 @@ export interface CalendarBlockData {
 })
 export class CalendarBlockComponent implements OnInit {
 
+
   @Input() data: CalendarBlockData;
   @Input() max = 1440;
+  top = 0;
   height = 0;
+  scale: number;
 
-  constructor() {
+  constructor(@Host() private parent: CalenderContainerDirective) {
   }
 
   ngOnInit() {
     this.height = this.calculateHeight(this.data);
+    this.top = this.calculateTop(this.data);
+    this.scale = this.calculateScale();
   }
 
   dragAll(distance: number) {
-    this.data.start -= distance;
-    this.data.end -= distance;
-    this.height = this.calculateHeight(this.data);
+    // validation
+    this.data.start -= distance * this.scale;
+    this.data.end -= distance * this.scale;
+    this.top = this.calculateTop(this.data);
   }
 
   dragUp(distance: number) {
-    this.data.start -= distance;
+    this.data.start -= distance * this.scale;
     this.height = this.calculateHeight(this.data);
+    this.top = this.calculateTop(this.data);
   }
 
   dragDown(distance: number) {
-    this.data.end += -(distance);
+    this.data.end -= distance * this.scale;
     this.height = this.calculateHeight(this.data);
   }
 
@@ -44,10 +52,21 @@ export class CalendarBlockComponent implements OnInit {
     return val / max * 100;
   }
 
+  calculateTop(data: CalendarBlockData): number {
+    if (!data) {
+      return;
+    }
+    return this.convertUnitsToPct(data.start, this.max);
+  }
+
   calculateHeight(data: CalendarBlockData): number {
     if (!data) {
       return;
     }
     return this.convertUnitsToPct(data.end - data.start, this.max);
+  }
+
+  calculateScale(): number {
+    return this.max / this.parent.getHeight();
   }
 }

@@ -3,16 +3,18 @@ import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {CalendarBlockDirective} from './calendar-block.directive';
-import { CalendarComponent } from './calendar/calendar.component';
-import { DraggableDirective } from './calendar-block/draggable.directive';
-import { CalendarBlockComponent } from './calendar-block/calendar-block.component';
+import {CalendarComponent} from './calendar/calendar.component';
+import {DraggableDirective} from './calendar-block/draggable.directive';
+import {CalendarBlockComponent} from './calendar-block/calendar-block.component';
+import {CalenderContainerDirective} from './calender-container.directive';
 
 @NgModule({
   declarations: [
     CalendarBlockDirective,
     CalendarComponent,
     DraggableDirective,
-    CalendarBlockComponent
+    CalendarBlockComponent,
+    CalenderContainerDirective
   ],
   imports: [
     CommonModule,
@@ -22,6 +24,7 @@ import { CalendarBlockComponent } from './calendar-block/calendar-block.componen
   exports: [
     CalendarBlockDirective,
     CalendarComponent,
+    CalenderContainerDirective,
     DraggableDirective
   ]
 })

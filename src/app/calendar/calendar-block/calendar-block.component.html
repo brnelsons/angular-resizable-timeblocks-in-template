@@ -1,5 +1,5 @@
 <div style="border: 1px green solid; background: lightgreen; position: absolute; width: 100%;"
-     fxLayout="column" fxLayoutAlign="space-between stretch" [ngStyle]="{'height': height + '%', 'top': data.start / 1440 * 100 + '%'}">
+     fxLayout="column" fxLayoutAlign="space-between stretch" [ngStyle]="{'height': height + '%', 'top': top + '%'}">
 
   <div fxLayout="row" fxLayoutAlign="center center">
     <mat-icon appDraggable (drag)="dragUp($event)" grabType="n-resize">drag_handle</mat-icon>
