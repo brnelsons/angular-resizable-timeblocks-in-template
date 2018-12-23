@@ -1,6 +1,16 @@
-<div fxLayout="row" style="height: 700px">
-  <div *ngFor="let day of days" fxFlex>
-    <h3>{{day.title}}</h3>
-    <app-calendar></app-calendar>
+<div fxFlex fxLayout="column">
+  <div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="20px">
+    <ng-container *ngFor="let template of templates">
+      <div style="height: 50px; width: 50px;" draggable="true" [ngStyle]="{'background': template.color}"
+           (dragstart)="dragTemplate($event, template)">
+        {{template.title}}
+      </div>
+    </ng-container>
+  </div>
+  <div fxLayout="row" style="height: 700px">
+    <div *ngFor="let day of days" fxFlex fxLayout="column">
+      <h3>{{day.title}}</h3>
+      <app-calendar fxFlex [blocks]="day.blocks"></app-calendar>
+    </div>
   </div>
 </div>

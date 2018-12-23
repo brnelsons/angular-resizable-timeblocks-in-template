@@ -5,12 +5,13 @@ export type GrabType = 'row-resize' | 'col-resize' | 'n-resize' | 's-resize' | '
 @Directive({
   selector: '[appDraggable]'
 })
-export class DraggableDirective implements OnInit{
+export class DraggableDirective implements OnInit {
   private dragging = false;
   private originY: number;
   private lastY: number;
 
   @Input() grabType: GrabType;
+  @Input() restrict = true;
   @Output() drag = new EventEmitter<number>();
 
   constructor(private elementRef: ElementRef) {
@@ -27,11 +28,27 @@ export class DraggableDirective implements OnInit{
     }
     event.preventDefault();
     const newY = event.clientY;
-    // if (newY > this.originY && this.lastY - newY > 0) {
-    //   console.log('cant move any more');
-    //   return;
+
+    const distance = this.lastY - newY;
+    const positive = distance > 0;
+    if (this.restrict) {
+      if (positive) {
+        if (this.elementRef.nativeElement.getBoundingClientRect().bottom < event.clientY) {
+          this.lastY = newY;
+          return;
+        }
+      } else {
+        if (this.elementRef.nativeElement.getBoundingClientRect().top > event.clientY) {
+          this.lastY = newY;
+          return;
+        }
+      }
+    }
+    // trick to ensure we get as close as possible
+    // for (let i = 0; i <= Math.abs(distance); i++) {
+    //   this.drag.emit(positive ? 1 : -1);
     // }
-    this.drag.emit(this.lastY - newY);
+    this.drag.emit(distance);
     this.lastY = newY;
   }
 
@@ -41,6 +58,7 @@ export class DraggableDirective implements OnInit{
       return;
     }
     event.preventDefault();
+    document.body.style.cursor = this.grabType + ' !important';
     this.dragging = true;
     this.originY = event.clientY;
     this.lastY = this.originY;
@@ -52,6 +70,7 @@ export class DraggableDirective implements OnInit{
       return;
     }
     this.dragging = false;
+    document.body.style.cursor = '';
   }
 
 }

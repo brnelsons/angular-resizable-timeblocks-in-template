@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {CalendarBlockData, CalendarRangePredicate} from '../calendar-block/calendar-block.component';
 
 @Component({
@@ -8,14 +8,14 @@ import {CalendarBlockData, CalendarRangePredicate} from '../calendar-block/calen
 })
 export class CalendarComponent implements OnInit {
 
-  blocks: CalendarBlockData[] = [
-    {start: 0, end: 60, title: '1'},
-    {start: 60, end: 120, title: '2'},
-    {start: 240, end: 300, title: '3'}
-  ];
+  @Input() blocks: CalendarBlockData[] = [];
+  @Input() duration = 120;
+  templateBlocks: CalendarBlockData[] = [];
+  previewBlock: CalendarBlockData;
+  maxLength = 1440;
 
   rangeValidator: CalendarRangePredicate = ((rangeMin, rangeMax, data) => {
-    for (const block of this.blocks) {
+    for (const block of this.templateBlocks) {
       if (block === data) {
         continue;
       }
@@ -31,6 +31,34 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.blocks.forEach(b => {
+      this.templateBlocks.push(b);
+    });
   }
 
+  @HostListener('dragover', ['$event'])
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    // show preview
+  }
+
+  @HostListener('drop', ['$event'])
+  dropTemplate(event: DragEvent) {
+    event.preventDefault();
+    const templateString = event.dataTransfer.getData('template');
+    if (templateString === '') {
+      return;
+    }
+    const template: CalendarBlockData = JSON.parse(templateString);
+    let lastEnd = 0;
+    this.templateBlocks.forEach(tb => {
+      if (tb.end > lastEnd) {
+        lastEnd = tb.end;
+      }
+    });
+    template.start = lastEnd;
+    template.end = Math.min(template.start + this.duration, 1440);
+
+    this.templateBlocks.push(template);
+  }
 }
