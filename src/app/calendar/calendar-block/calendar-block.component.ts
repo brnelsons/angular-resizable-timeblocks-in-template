@@ -36,8 +36,8 @@ export class CalendarBlockComponent implements OnInit {
 
   dragAll(distance: number) {
     const scaledDistance = distance * this.scale;
-    const rangeStart = this.data.start - scaledDistance;
-    const rangeEnd = this.data.end - scaledDistance;
+    const rangeStart = Math.floor(this.data.start - scaledDistance);
+    const rangeEnd = Math.floor(this.data.end - scaledDistance);
     // validation
     if (!this.isValid(rangeStart, rangeEnd)) {
       // TODO get as close as possible
@@ -53,8 +53,8 @@ export class CalendarBlockComponent implements OnInit {
   }
 
   dragUp(distance: number) {
-    const rangeStart = this.data.start - distance * this.scale;
-    if (this.validateRange && !this.validateRange(rangeStart, this.data.end, this.data)) {
+    const rangeStart = Math.floor(this.data.start - distance * this.scale);
+    if (!this.isValid(rangeStart, this.data.end)) {
       // TODO get as close as possible
       return;
     }
@@ -64,8 +64,8 @@ export class CalendarBlockComponent implements OnInit {
   }
 
   dragDown(distance: number) {
-    const rangeEnd = this.data.end - distance * this.scale;
-    if (this.validateRange && !this.validateRange(this.data.start, rangeEnd, this.data)) {
+    const rangeEnd = Math.floor(this.data.end - distance * this.scale);
+    if (!this.isValid(this.data.start, rangeEnd)) {
       // TODO get as close as possible
       return;
     }

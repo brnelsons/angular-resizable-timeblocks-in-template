@@ -7,7 +7,7 @@
 
   <div fxFlex fxLayout="row" fxLayoutAlign="center center"
        appDraggable (drag)="dragAll($event)" grabType="grab">
-    {{data.title}}
+    {{data.title}} ({{data.start}} - {{data.end}})
   </div>
 
   <div fxLayout="row" fxLayoutAlign="center center">

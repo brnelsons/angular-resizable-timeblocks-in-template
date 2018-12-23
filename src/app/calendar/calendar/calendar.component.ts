@@ -20,8 +20,7 @@ export class CalendarComponent implements OnInit {
         continue;
       }
       if (rangeMin > block.start && rangeMin < block.end
-        || rangeMax > block.start && rangeMax < block.end
-        || rangeMin < 1 || rangeMax > 1440) {
+        || rangeMax > block.start && rangeMax < block.end) {
         return false;
       }
     }

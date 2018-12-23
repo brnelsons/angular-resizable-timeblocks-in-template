@@ -1,16 +1,6 @@
-<app-calendar></app-calendar>
-<!--<div class="container" fxLayout="column">-->
-<!--<div class="source-container" fxLayout="row">-->
-<!--<div class="source-block" *ngFor="let source of sourceList" draggable="true"-->
-<!--(dragstart)="drag($event, source, 'source')">{{source.label}}</div>-->
-<!--</div>-->
-
-<!--<div class="target-container" fxLayout="column" (drop)="drop($event)" (dragover)="canDrop($event, targetList)">-->
-<!--<div *ngFor="let target of targetList; index as i" (dragenter)="dropPreviewEnter(i)">-->
-<!--<div class="preview-before"-->
-<!--[ngClass]="i == dropPreviewIndex ? 'drop-preview-active' : 'drop-preview'"></div>-->
-<!--<div class="target-block" >{{target.label}}</div>-->
-<!--</div>-->
-<!--</div>-->
-
-<!--</div>-->
+<div fxLayout="row" style="height: 700px">
+  <div *ngFor="let day of days" fxFlex>
+    <h3>{{day.title}}</h3>
+    <app-calendar></app-calendar>
+  </div>
+</div>
