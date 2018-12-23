@@ -1,4 +1,5 @@
 <div appCalenderContainer style="height: 720px; width: 200px; position:relative; border: 1px black solid" fxLayout="column">
-  <app-calendar-block max="1440" [data]="{start: 0, end: 120, title: 'testing'}"></app-calendar-block>
-  <app-calendar-block max="1440" [data]="{start: 120, end: 360, title: 'testing'}"></app-calendar-block>
+  <ng-container *ngFor="let timeBlock of blocks">
+    <app-calendar-block max="1440" [data]="timeBlock" [validateRange]="rangeValidator"></app-calendar-block>
+  </ng-container>
 </div>

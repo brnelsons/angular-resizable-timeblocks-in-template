@@ -1,4 +1,4 @@
-import {Component, Host, Input, OnInit} from '@angular/core';
+import {Component, Host, HostListener, Input, OnInit} from '@angular/core';
 import {CalenderContainerDirective} from '../calender-container.directive';
 
 export interface CalendarBlockData {
@@ -7,6 +7,9 @@ export interface CalendarBlockData {
   title: string;
 }
 
+export type CalendarRangePredicate = (rangeMin: number, rangeMax: number, data: CalendarBlockData) => boolean;
+
+
 @Component({
   selector: 'app-calendar-block',
   templateUrl: './calendar-block.component.html',
@@ -14,9 +17,10 @@ export interface CalendarBlockData {
 })
 export class CalendarBlockComponent implements OnInit {
 
-
   @Input() data: CalendarBlockData;
   @Input() max = 1440;
+  @Input() validateRange: CalendarRangePredicate;
+
   top = 0;
   height = 0;
   scale: number;
@@ -31,20 +35,41 @@ export class CalendarBlockComponent implements OnInit {
   }
 
   dragAll(distance: number) {
+    const scaledDistance = distance * this.scale;
+    const rangeStart = this.data.start - scaledDistance;
+    const rangeEnd = this.data.end - scaledDistance;
     // validation
-    this.data.start -= distance * this.scale;
-    this.data.end -= distance * this.scale;
+    if (!this.isValid(rangeStart, rangeEnd)) {
+      // TODO get as close as possible
+      return;
+    }
+    this.data.start = rangeStart;
+    this.data.end = rangeEnd;
     this.top = this.calculateTop(this.data);
   }
 
+  private isValid(rangeStart, rangeEnd) {
+    return rangeStart >= 0 && rangeEnd <= 1440 && this.validateRange && this.validateRange(rangeStart, rangeEnd, this.data);
+  }
+
   dragUp(distance: number) {
-    this.data.start -= distance * this.scale;
+    const rangeStart = this.data.start - distance * this.scale;
+    if (this.validateRange && !this.validateRange(rangeStart, this.data.end, this.data)) {
+      // TODO get as close as possible
+      return;
+    }
+    this.data.start = rangeStart;
     this.height = this.calculateHeight(this.data);
     this.top = this.calculateTop(this.data);
   }
 
   dragDown(distance: number) {
-    this.data.end -= distance * this.scale;
+    const rangeEnd = this.data.end - distance * this.scale;
+    if (this.validateRange && !this.validateRange(this.data.start, rangeEnd, this.data)) {
+      // TODO get as close as possible
+      return;
+    }
+    this.data.end = rangeEnd;
     this.height = this.calculateHeight(this.data);
   }
 
@@ -68,5 +93,10 @@ export class CalendarBlockComponent implements OnInit {
 
   calculateScale(): number {
     return this.max / this.parent.getHeight();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.scale = this.calculateScale();
   }
 }
