@@ -3,15 +3,15 @@
      [ngStyle]="{'height': height + '%', 'top': top + '%', 'border': '1px solid ' + data.color, 'background': data.color}">
 
   <div fxLayout="row" fxLayoutAlign="center center">
-    <mat-icon appDraggable (drag)="dragTop($event)" grabType="n-resize">drag_handle</mat-icon>
+    <mat-icon appDraggable [scale]="scale" (drag)="dragTop($event)" grabType="n-resize">drag_handle</mat-icon>
   </div>
 
   <div fxFlex fxLayout="row" fxLayoutAlign="center center"
-       appDraggable (drag)="dragAll($event)" grabType="grab" restrict="false">
+       appDraggable (drag)="dragAll($event)" grabType="grab" restrict="true" [scale]="scale">
     {{data.title}} ({{data.start}} - {{data.end}})
   </div>
 
   <div fxLayout="row" fxLayoutAlign="center center">
-    <mat-icon appDraggable (drag)="dragBottom($event)" grabType="s-resize" >drag_handle</mat-icon>
+    <mat-icon appDraggable [scale]="scale" (drag)="dragBottom($event)" grabType="s-resize" >drag_handle</mat-icon>
   </div>
 </div>

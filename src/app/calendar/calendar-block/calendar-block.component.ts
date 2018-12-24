@@ -1,5 +1,6 @@
 import {Component, Host, HostListener, Input, OnInit} from '@angular/core';
 import {CalenderContainerDirective} from '../calender-container.directive';
+import * as moment from 'moment';
 
 export interface CalendarBlockData {
   start: number;
@@ -9,7 +10,6 @@ export interface CalendarBlockData {
 }
 
 export type CalendarRangePredicate = (rangeMin: number, rangeMax: number, data: CalendarBlockData) => boolean;
-
 
 @Component({
   selector: 'app-calendar-block',
@@ -37,40 +37,32 @@ export class CalendarBlockComponent implements OnInit {
     this.scale = this.calculateScale();
   }
 
+  printDateRange(data: CalendarBlockData): string {
+    const startMinute = Math.floor(data.start % 60);
+    const startHour = Math.floor(data.start / 60);
+    const endMinute = Math.floor(data.end % 60);
+    const endHour = Math.floor(data.end / 60);
+    return moment(`${startHour}${startMinute}`, 'HHmm').format('HH:mm')
+      + moment(`${endHour}${endMinute}`, 'HHmm').format('HH:mm');
+  }
+
   dragAll(distance: number) {
-    const scaledDistance = distance * this.scale;
-    const rangeStart = this.data.start - scaledDistance;
-    const rangeEnd = this.data.end - scaledDistance;
+    console.log(distance);
+    const rangeStart = this.data.start - distance;
+    const rangeEnd = this.data.end - distance;
     // validation
     if (!this.isValid(rangeStart, rangeEnd)) {
-      // get as close as possible
-      let i = 0;
-      const direction = distance > 0 ? 1 : -1;
-      while (this.isValid(this.data.start - direction, this.data.end - direction) && i <= Math.abs(distance)) {
-        i++;
-        this.data.start = this.data.start - direction;
-        this.data.end = this.data.end - direction;
-        this.top = this.calculateTop(this.data);
-      }
       return;
     }
-    this.data.start = Math.floor(rangeStart);
-    this.data.end = Math.floor(rangeEnd);
+    this.data.start = rangeStart;
+    this.data.end = rangeEnd;
     this.top = this.calculateTop(this.data);
   }
 
   dragTop(distance: number) {
-    const rangeStart = Math.floor(this.data.start - distance * this.scale);
+    console.log(distance);
+    const rangeStart = this.data.start - distance;
     if (!this.isValid(rangeStart, this.data.end)) {
-      // get as close as possible
-      let i = 0;
-      const direction = distance > 0 ? 1 : -1;
-      while (this.isValid(this.data.start - direction, this.data.end) && i <= Math.abs(distance)) {
-        i++;
-        this.data.start = this.data.start - direction;
-        this.height = this.calculateHeight(this.data);
-        this.top = this.calculateTop(this.data);
-      }
       return;
     }
     this.data.start = rangeStart;
@@ -79,16 +71,9 @@ export class CalendarBlockComponent implements OnInit {
   }
 
   dragBottom(distance: number) {
-    const rangeEnd = Math.floor(this.data.end - distance * this.scale);
+    console.log(distance);
+    const rangeEnd = this.data.end - distance;
     if (!this.isValid(this.data.start, rangeEnd)) {
-      // get as close as possible
-      let i = 0;
-      const direction = distance > 0 ? 1 : -1;
-      while (this.isValid(this.data.start, this.data.end - direction) && i <= Math.abs(distance)) {
-        i++;
-        this.data.end = this.data.end - direction;
-        this.height = this.calculateHeight(this.data);
-      }
       return;
     }
     this.data.end = rangeEnd;

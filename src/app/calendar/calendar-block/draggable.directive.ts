@@ -7,11 +7,12 @@ export type GrabType = 'row-resize' | 'col-resize' | 'n-resize' | 's-resize' | '
 })
 export class DraggableDirective implements OnInit {
   private dragging = false;
-  private originY: number;
-  private lastY: number;
+  private lastMouseY: number;
 
   @Input() grabType: GrabType;
   @Input() restrict = true;
+  @Input() snapLength = 15;
+  @Input() scale = 1;
   @Output() drag = new EventEmitter<number>();
 
   constructor(private elementRef: ElementRef) {
@@ -27,29 +28,36 @@ export class DraggableDirective implements OnInit {
       return;
     }
     event.preventDefault();
-    const newY = event.clientY;
+    const mouseY = event.clientY;
 
-    const distance = this.lastY - newY;
-    const positive = distance > 0;
+    const distancePx = this.lastMouseY - mouseY;
+    const snapLengthPx = this.snapLength / this.scale;
+    const positive = distancePx > 0;
     if (this.restrict) {
       if (positive) {
-        if (this.elementRef.nativeElement.getBoundingClientRect().bottom < event.clientY) {
-          this.lastY = newY;
+        if (this.elementRef.nativeElement.getBoundingClientRect().bottom < mouseY) {
+          this.lastMouseY = mouseY;
           return;
         }
       } else {
-        if (this.elementRef.nativeElement.getBoundingClientRect().top > event.clientY) {
-          this.lastY = newY;
+        if (this.elementRef.nativeElement.getBoundingClientRect().top > mouseY) {
+          this.lastMouseY = mouseY;
           return;
         }
       }
     }
-    // trick to ensure we get as close as possible
-    // for (let i = 0; i <= Math.abs(distance); i++) {
-    //   this.drag.emit(positive ? 1 : -1);
-    // }
-    this.drag.emit(distance);
-    this.lastY = newY;
+    if (Math.abs(distancePx) >= snapLengthPx) {
+      console.log(distancePx, snapLengthPx);
+      let i = 0;
+      // emit a single move event for each snapLength we travelled
+      while (i < Math.floor(Math.abs(distancePx / snapLengthPx))) {
+        const value = (positive ? 1 : -1) * this.snapLength;
+        this.drag.emit(value);
+        i++;
+      }
+      // add the remainder of unsused distance traveled so we don't get weird travel issues
+      this.lastMouseY = mouseY + (distancePx % snapLengthPx);
+    }
   }
 
   @HostListener('mousedown', ['$event'])
@@ -60,8 +68,7 @@ export class DraggableDirective implements OnInit {
     event.preventDefault();
     document.body.style.cursor = this.grabType + ' !important';
     this.dragging = true;
-    this.originY = event.clientY;
-    this.lastY = this.originY;
+    this.lastMouseY = event.clientY;
   }
 
   @HostListener('document:mouseup', ['$event'])
