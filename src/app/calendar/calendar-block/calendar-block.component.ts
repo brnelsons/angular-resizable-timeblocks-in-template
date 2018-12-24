@@ -47,7 +47,6 @@ export class CalendarBlockComponent implements OnInit {
   }
 
   dragAll(distance: number) {
-    console.log(distance);
     const rangeStart = this.data.start - distance;
     const rangeEnd = this.data.end - distance;
     // validation
@@ -60,7 +59,6 @@ export class CalendarBlockComponent implements OnInit {
   }
 
   dragTop(distance: number) {
-    console.log(distance);
     const rangeStart = this.data.start - distance;
     if (!this.isValid(rangeStart, this.data.end)) {
       return;
@@ -71,7 +69,6 @@ export class CalendarBlockComponent implements OnInit {
   }
 
   dragBottom(distance: number) {
-    console.log(distance);
     const rangeEnd = this.data.end - distance;
     if (!this.isValid(this.data.start, rangeEnd)) {
       return;

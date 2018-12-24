@@ -9,7 +9,7 @@ export class DraggableDirective implements OnInit {
   private dragging = false;
   private lastMouseY: number;
 
-  @Input() grabType: GrabType;
+  @Input() appDraggable: GrabType;
   @Input() restrict = true;
   @Input() snapLength = 15;
   @Input() scale = 1;
@@ -19,7 +19,7 @@ export class DraggableDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    this.elementRef.nativeElement.style.cursor = this.grabType;
+    this.elementRef.nativeElement.style.cursor = this.appDraggable;
   }
 
   @HostListener('document:mousemove', ['$event'])
@@ -47,7 +47,6 @@ export class DraggableDirective implements OnInit {
       }
     }
     if (Math.abs(distancePx) >= snapLengthPx) {
-      console.log(distancePx, snapLengthPx);
       let i = 0;
       // emit a single move event for each snapLength we travelled
       while (i < Math.floor(Math.abs(distancePx / snapLengthPx))) {
@@ -66,7 +65,7 @@ export class DraggableDirective implements OnInit {
       return;
     }
     event.preventDefault();
-    document.body.style.cursor = this.grabType + ' !important';
+    document.body.style.cursor = this.appDraggable + ' !important';
     this.dragging = true;
     this.lastMouseY = event.clientY;
   }
