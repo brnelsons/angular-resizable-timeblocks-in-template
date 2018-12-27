@@ -1,17 +1,17 @@
-<div style="position: absolute; width: 100%;"
-     fxLayout="column" fxLayoutAlign="space-between stretch"
-     [ngStyle]="{'height': height + '%', 'top': top + '%', 'border': '1px solid ' + data.color, 'background': data.color}">
-
+<div fxLayout="column" fxLayoutAlign="space-between stretch" class="block" [ngStyle]="blockStyle">
+  <!-- TOP GRABBER -->
   <div fxLayout="row" fxLayoutAlign="center center">
-    <mat-icon appDraggable="n-resize" [scale]="scale" (drag)="dragTop($event)" >drag_handle</mat-icon>
+    <mat-icon appDraggable="n-resize" [scale]="scale" (drag)="slideTop($event)">drag_handle</mat-icon>
   </div>
 
+  <!-- CONTENT -->
   <div fxFlex fxLayout="row" fxLayoutAlign="center center"
-       appDraggable="grab" (drag)="dragAll($event)"  [scale]="scale">
+       appDraggable="grab" (drag)="slide($event)" [scale]="scale">
     {{data.title}} ({{data.start}} - {{data.end}})
   </div>
 
+  <!-- BOTTOM GRABBER -->
   <div fxLayout="row" fxLayoutAlign="center center">
-    <mat-icon appDraggable="s-resize" [scale]="scale" (drag)="dragBottom($event)"  >drag_handle</mat-icon>
+    <mat-icon appDraggable="s-resize" [scale]="scale" (drag)="slideBottom($event)">drag_handle</mat-icon>
   </div>
 </div>

@@ -7,6 +7,7 @@ import {CalendarComponent} from './calendar/calendar.component';
 import {DraggableDirective} from './directives/draggable.directive';
 import {CalendarBlockComponent} from './calendar-block/calendar-block.component';
 import {CalenderContainerDirective} from './calender-container.directive';
+import {ContextMenuModule} from 'ngx-contextmenu';
 
 @NgModule({
   declarations: [
@@ -19,13 +20,15 @@ import {CalenderContainerDirective} from './calender-container.directive';
   imports: [
     CommonModule,
     MatIconModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    ContextMenuModule.forRoot()
   ],
   exports: [
     CalendarBlockDirective,
     CalendarComponent,
     CalenderContainerDirective,
-    DraggableDirective
+    DraggableDirective,
+    ContextMenuModule
   ]
 })
 export class CalendarModule {

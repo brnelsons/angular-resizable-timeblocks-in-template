@@ -23,17 +23,14 @@ export class CalendarBlockComponent implements OnInit {
   @Input() minInterval = 15;
   @Input() snapSize = 15;
   @Input() validateRange: CalendarRangePredicate;
-
-  top = 0;
-  height = 0;
   scale: number;
+  blockStyle;
 
   constructor(@Host() private parent: CalenderContainerDirective) {
   }
 
   ngOnInit() {
-    this.height = this.calculateHeight(this.data);
-    this.top = this.calculateTop(this.data);
+    this.updateStyle(this.data);
     this.scale = this.calculateScale();
   }
 
@@ -46,7 +43,7 @@ export class CalendarBlockComponent implements OnInit {
       + moment(`${endHour}${endMinute}`, 'HHmm').format('HH:mm');
   }
 
-  dragAll(distance: number) {
+  slide(distance: number) {
     const rangeStart = this.data.start - distance;
     const rangeEnd = this.data.end - distance;
     // validation
@@ -55,26 +52,35 @@ export class CalendarBlockComponent implements OnInit {
     }
     this.data.start = rangeStart;
     this.data.end = rangeEnd;
-    this.top = this.calculateTop(this.data);
+    this.updateStyle(this.data);
   }
 
-  dragTop(distance: number) {
+  slideTop(distance: number) {
     const rangeStart = this.data.start - distance;
     if (!this.isValid(rangeStart, this.data.end)) {
       return;
     }
     this.data.start = rangeStart;
-    this.height = this.calculateHeight(this.data);
-    this.top = this.calculateTop(this.data);
+    this.updateStyle(this.data);
   }
 
-  dragBottom(distance: number) {
+  slideBottom(distance: number) {
     const rangeEnd = this.data.end - distance;
     if (!this.isValid(this.data.start, rangeEnd)) {
       return;
     }
     this.data.end = rangeEnd;
-    this.height = this.calculateHeight(this.data);
+    this.updateStyle(this.data);
+  }
+
+  private updateStyle(data: CalendarBlockData) {
+    const height = this.calculateHeight(data);
+    const top = this.calculateTop(data);
+    this.blockStyle = {
+      'height': height + '%',
+      'top': top + '%',
+      'background': data.color
+    };
   }
 
   private isValid(rangeStart, rangeEnd): boolean {
@@ -105,6 +111,11 @@ export class CalendarBlockComponent implements OnInit {
 
   private calculateScale(): number {
     return this.max / this.parent.getHeight();
+  }
+
+  @HostListener('contextmenu', ['$event'])
+  click(event: MouseEvent) {
+    event.preventDefault();
   }
 
   @HostListener('window:resize')

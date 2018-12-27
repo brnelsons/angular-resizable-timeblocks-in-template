@@ -1,6 +1,19 @@
-<div appCalenderContainer style="height: 100%; width: 100%; position:relative; border: 1px black solid" fxLayout="column">
-  <app-calendar-block [max]="maxLength" *ngIf="previewBlock" [data]="previewBlock" [validateRange]="rangeValidator"></app-calendar-block>
+<div appCalenderContainer fxLayout="column" class="day">
+  <app-calendar-block [max]="maxLength" *ngIf="previewBlock" [data]="previewBlock"
+                      [validateRange]="rangeValidator"></app-calendar-block>
   <ng-container *ngFor="let timeBlock of templateBlocks">
-    <app-calendar-block [max]="maxLength" [data]="timeBlock" [validateRange]="rangeValidator"></app-calendar-block>
+    <app-calendar-block [max]="maxLength" [data]="timeBlock" [validateRange]="rangeValidator" [contextMenu]="contextMenu" [contextMenuSubject]="timeBlock"></app-calendar-block>
   </ng-container>
+
+  <context-menu #contextMenu>
+    <ng-template contextMenuItem (execute)="moveUp($event.item)">
+      Move Up
+    </ng-template>
+    <ng-template contextMenuItem (execute)="moveDown($event.item)">
+      Move Down
+    </ng-template>
+    <ng-template contextMenuItem (execute)="remove($event.item)">
+      Remove
+    </ng-template>
+  </context-menu>
 </div>

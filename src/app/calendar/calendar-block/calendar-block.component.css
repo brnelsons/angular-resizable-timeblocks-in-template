@@ -1,3 +1,4 @@
-.handle {
-  cursor: row-resize;
+.block {
+  position: absolute;
+  width: 100%;
 }

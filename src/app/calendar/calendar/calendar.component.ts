@@ -36,6 +36,33 @@ export class CalendarComponent implements OnInit {
     });
   }
 
+  moveUp(data: CalendarBlockData) {
+    this.sort();
+    const index = this.templateBlocks.indexOf(data);
+    if (index < 1) {
+      return;
+    }
+    this.switchElementWithNext(index - 1);
+  }
+
+  moveDown(data: CalendarBlockData) {
+    this.sort();
+    const index = this.templateBlocks.indexOf(data);
+    if (index === -1
+      || index === this.templateBlocks.length - 1) {
+      return;
+    }
+    this.switchElementWithNext(index);
+  }
+
+  remove(data: CalendarBlockData) {
+    const index = this.templateBlocks.indexOf(data);
+    if (index === -1) {
+      return;
+    }
+    this.templateBlocks.splice(index, 1);
+  }
+
   @HostListener('dragover', ['$event'])
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -58,7 +85,40 @@ export class CalendarComponent implements OnInit {
     });
     template.start = lastEnd;
     template.end = Math.min(template.start + this.duration, 1440);
-
+    if (template.end - template.start < this.duration) {
+      // TODO emit event here for failure to add
+      return;
+    }
     this.templateBlocks.push(template);
+  }
+
+  private sort() {
+    this.templateBlocks.sort((a, b) => {
+      return a.start > b.start ? 1 : -1;
+    });
+  }
+
+  private switchElementWithNext(index) {
+    const splicedBlocks = this.templateBlocks.splice(index, 2);
+
+    const above = splicedBlocks[0];
+    const below = splicedBlocks[1];
+
+    const aboveStart = above.start;
+    const aboveEnd = above.end;
+
+    const belowStart = below.start;
+    const belowEnd = below.end;
+
+    below.start = above.start;
+    below.end = below.start + (belowEnd - belowStart);
+
+    above.start = below.end;
+    above.end = above.start + (aboveEnd - aboveStart);
+
+    setTimeout(() => {
+      this.templateBlocks.push(below);
+      this.templateBlocks.push(above);
+    });
   }
 }
