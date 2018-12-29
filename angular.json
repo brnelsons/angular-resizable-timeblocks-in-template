@@ -121,6 +121,41 @@
           }
         }
       }
+    },
+    "drag-handle": {
+      "root": "projects/drag-handle",
+      "sourceRoot": "projects/drag-handle/src",
+      "projectType": "library",
+      "prefix": "drg",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/drag-handle/tsconfig.lib.json",
+            "project": "projects/drag-handle/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/drag-handle/src/test.ts",
+            "tsConfig": "projects/drag-handle/tsconfig.spec.json",
+            "karmaConfig": "projects/drag-handle/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/drag-handle/tsconfig.lib.json",
+              "projects/drag-handle/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "calendar-widgets"

@@ -17,6 +17,14 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "drag-handle": [
+        "dist/drag-handle"
+      ],
+      "drag-handle/*": [
+        "dist/drag-handle/*"
+      ]
+    }
   }
 }
